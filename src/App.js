@@ -1,25 +1,31 @@
-import logo from './logo.svg';
 import './App.css';
+import appPromise from './js/qlik/QlikConnection'
+import Home from './js/Pages/Home'
+import { useState, useEffect, createContext } from 'react'
+
+export const AppContext = createContext()
+
+require('bootstrap/dist/css/bootstrap.min.css')
 
 function App() {
+  const [app, setApp] = useState(undefined)
+
+  useEffect(()=>{
+    appPromise.then((app)=>{
+      setApp(app)
+    })
+  }, [])
+
+    if (!app) return 'Carregando Qlik. Por favor aguarde.'
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppContext.Provider value = {app}>
+      <div className="App">
+        <Home/>
+      </div>
+    </AppContext.Provider>
   );
 }
 
 export default App;
+
